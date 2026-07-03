@@ -1,0 +1,33 @@
+{
+	"name": "umt-markup-practice-yavchukdiana",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "vite",
+		"preview": "vite preview",
+		"preview:pages": "GITHUB_ACTIONS=true GITHUB_REPOSITORY=miyu-di/UMT-markup-practice-YavchukDiana VITE_API_MODE=static sh -c 'vite build && vite preview'",
+		"build": "vite build",
+		"api": "json-server db.json --port 3001"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/miyu-di/UMT-markup-practice-YavchukDiana.git"
+	},
+	"keywords": [],
+	"author": "Diana Yavchuk",
+	"license": "ISC",
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/miyu-di/UMT-markup-practice-YavchukDiana/issues"
+	},
+	"homepage": "https://github.com/miyu-di/UMT-markup-practice-YavchukDiana#readme",
+	"dependencies": {
+		"axios": "^1.18.1",
+		"swiper": "^14.0.1"
+	},
+	"devDependencies": {
+		"json-server": "^1.0.0-beta.15",
+		"vite": "^8.1.3"
+	}
+}

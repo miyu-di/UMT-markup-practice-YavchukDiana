@@ -47,7 +47,9 @@
 							</li>
 						</ul>
 					</nav>
-					<button class="primary-btn header-btn" type="button">Explore Bouquets</button>
+					<button class="primary-btn header-btn" type="button">
+						<a href="#bouquets"> Explore Bouquets </a>
+					</button>
 					<button class="menu-btn" aria-expanded="false" aria-controls="mobile-menu" data-menu-button>
 						<svg class="menu-icon" aria-label="Mobile menu toggle">
 							<use href="./icons/icons.svg#menu" class="menu-icon__burger"></use>
@@ -63,7 +65,9 @@
 						At Flora, we believe that every occasion deserves a beautiful bouquet. Our expertly crafted arrangements are
 						designed to bring joy and elegance to your celebrations.
 					</p>
-					<button class="primary-btn hero-btn" type="button">Explore Our Bestsellers</button>
+					<button class="primary-btn hero-btn" type="button">
+						<a href="#bestsellers"> Explore Our Bestsellers </a>
+					</button>
 				</div>
 			</section>
 
@@ -92,44 +96,19 @@
 			<section class="sell-section" id="bestsellers">
 				<div class="bestsellers-wrapper container">
 					<h2 class="sell-title">Top-Selling Bouquets</h2>
-					<ul class="bestsellers-list">
-						<li class="card">
-							<img class="selling-img" src="./images/spring-elegance.png" alt="Spring Elegance" />
-							<h3 class="card-title">Spring Elegance</h3>
-							<p>$35</p>
-						</li>
-
-						<li class="card">
-							<img class="selling-img" src="./images/berry-chic.png" alt="Berry Chic" />
-							<h3>Berry Chic</h3>
-							<p>$40</p>
-						</li>
-
-						<li class="card">
-							<img class="selling-img" src="./images/lavender-dream.png" alt="Lavender Dream" />
-							<h3>Lavender Dream</h3>
-							<p>$55</p>
-						</li>
-					</ul>
+					<ul class="bestsellers-list" id="bestsellers-list"></ul>
 				</div>
 
 				<div class="pagination-container">
-					<ul class="pagination-dots">
-						<li class="dot active"></li>
-						<li class="dot"></li>
-						<li class="dot"></li>
-						<li class="dot"></li>
-						<li class="dot"></li>
-						<li class="dot"></li>
-					</ul>
+					<ul class="pagination-dots" id="bestsellers-dots"></ul>
 
 					<div class="btn-wrapper">
-						<button class="pagination-btn" type="button">
+						<button class="pagination-btn" id="bestsellers-prev" type="button">
 							<svg class="pagination-icon">
 								<use href="./icons/icons.svg#left-arrow"></use>
 							</svg>
 						</button>
-						<button class="pagination-btn" type="button">
+						<button class="pagination-btn" id="bestsellers-next" type="button">
 							<svg class="pagination-icon">
 								<use href="./icons/icons.svg#right-arrow"></use>
 							</svg>
@@ -143,86 +122,24 @@
 					<h2 class="bouquet-title">Bouquets</h2>
 					<p class="bouquet-desc">Explore our stunning selection of fresh flower bouquets.</p>
 
-					<ul class="bouquet-list">
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/peach-meadow.png" alt="Peach Meadow" />
-							<h3 class="bouquet-name">Peach Meadow</h3>
-							<p class="bouquet-price">$55</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/blush-romance.png" alt="Blush Romance" />
-							<h3 class="bouquet-name">Blush Romance</h3>
-							<p class="bouquet-price">$34</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/pastel-garden.png" alt="Pastel Garden" />
-							<h3 class="bouquet-name">Pastel Garden</h3>
-							<p class="bouquet-price">$40</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/tulip-charm.png" alt="Tulip Charm" />
-							<h3 class="bouquet-name">Tulip Charm</h3>
-							<p class="bouquet-price">$61</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/berry-bloom.png" alt="Berry Bloom" />
-							<h3 class="bouquet-name">Berry Bloom</h3>
-							<p class="bouquet-price">$32</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/sweet-whisper.png" alt="Sweet Whisper" />
-							<h3 class="bouquet-name">Sweet Whisper</h3>
-							<p class="bouquet-price">$40</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/field-joy.png" alt="Field Joy" />
-							<h3 class="bouquet-name">Field Joy</h3>
-							<p class="bouquet-price">$49</p>
-						</li>
-
-						<li class="bouquet-card">
-							<img class="bouquet-img" src="./images/soft-bloom.png" alt="Soft Bloom" />
-							<h3 class="bouquet-name">Soft Bloom</h3>
-							<p class="bouquet-price">$37</p>
-						</li>
-					</ul>
-					<button class="primary-btn bouquet-btn" type="button">Show More</button>
+					<ul class="bouquet-list" id="bouquet-list"></ul>
+					<button class="primary-btn bouquet-btn" id="show-more-btn" type="button">Show More</button>
 				</div>
 			</section>
 
 			<section class="feedback-section" id="feedback">
 				<div class="container">
 					<h2 class="feedback-title">What our clients says</h2>
-					<ul class="feedback-list">
-						<li class="feedback-card">
-							<p class="feedback-quote">"Flora made my anniversary unforgettable with their beautiful arrangement!"</p>
-							<p>Emma T.</p>
-						</li>
-						<li class="feedback-card">
-							<p class="feedback-quote">
-								Absolutely stunning bouquet! It looked even better than the photo and arrived right on time.
-							</p>
-							<p>Daniel R.</p>
-						</li>
-						<li class="feedback-card">
-							<p class="feedback-quote">The service was exceptional, and the flowers were fresh!</p>
-							<p>Olivia M.</p>
-						</li>
-					</ul>
-
+					<div class="swiper">
+						<ul class="swiper-wrapper feedback-list" id="feedback-list"></ul>
+					</div>
 					<div class="feedback-btn-wrapper">
-						<button class="pagination-btn" type="button">
+						<button class="pagination-btn" id="feedback-prev" type="button">
 							<svg class="pagination-icon">
 								<use href="./icons/icons.svg#left-arrow"></use>
 							</svg>
 						</button>
-						<button class="pagination-btn" type="button">
+						<button class="pagination-btn" id="feedback-next" type="button">
 							<svg class="pagination-icon">
 								<use href="./icons/icons.svg#right-arrow"></use>
 							</svg>
@@ -304,21 +221,21 @@
 
 					<ul class="footer-socials-list">
 						<li class="footer-icon">
-							<a class="footer-social-link" href="https://www.facebook.com/?locale=uk_UA" aria-label="facebook">
+							<a class="footer-social-link" href="https://www.facebook.com/?locale=uk_UA" aria-label="facebook" target="_blank">
 								<svg class="footer-social-svg">
 									<use href="./icons/icons.svg#facebook"></use>
 								</svg>
 							</a>
 						</li>
 						<li class="footer-icon">
-							<a class="footer-social-link" href="https://www.instagram.com/" aria-label="instagram">
+							<a class="footer-social-link" href="https://www.instagram.com/" aria-label="instagram" target="_blank">
 								<svg class="footer-social-svg">
 									<use href="./icons/icons.svg#instagram"></use>
 								</svg>
 							</a>
 						</li>
 						<li class="footer-icon">
-							<a class="footer-social-link" href="https://www.facebook.com/?locale=uk_UA" aria-label="X">
+							<a class="footer-social-link" href="https://x.com/?lang=uk" aria-label="Twitter" target="_blank">
 								<svg class="footer-social-svg">
 									<use href="./icons/icons.svg#X"></use>
 								</svg>
@@ -355,11 +272,11 @@
 					</li>
 				</ul>
 			</nav>
-			<button class="primary-btn menu-action-btn" type="button">Explore Bouquets</button>
+			<button class="primary-btn menu-action-btn menu-link" type="button"><a href="#bouquets"> Explore Bouquets </a></button>
 		</div>
 
 		<!-- Product Modal -->
-		<!-- <div class="modal-backdrop">
+		<div class="modal-backdrop">
 			<div class="product-modal">
 				<button class="modal-close" aria-label="Close product details" data-modal-close>
 					<svg class="modal-close-icon" aria-hidden="true">
@@ -368,11 +285,11 @@
 				</button>
 
 				<div class="product-modal-content">
-					<img class="product-modal-img" src="./images/spring-elegance.png" />
+					<img class="product-modal-img" src="" alt="" />
 					<div class="product-modal-info">
-						<h3 class="product-modal-title">Spring Elegance</h3>
+						<h3 class="product-modal-title"></h3>
 						<div>
-							<p class="product-modal-price">$35</p>
+							<p class="product-modal-price"></p>
 							<span class="product-modal-price-divider" aria-hidden="true"></span>
 						</div>
 						<p class="product-modal-desc">
@@ -396,11 +313,11 @@
 					</div>
 				</div>
 			</div>
-		</div> -->
+		</div>
 
 		<!-- Order Modal -->
 
-		<!-- <div class="modal-backdrop">
+		<div class="modal-backdrop">
 			<div class="order-modal">
 				<button class="modal-close" aria-label="Close product details" data-modal-close>
 					<svg class="modal-close-icon" aria-hidden="true">
@@ -420,7 +337,13 @@
 						</div>
 						<div class="input-block">
 							<label for="address">Adress*</label>
-							<input type="text" name="address" id="address" placeholder="456 Floral Ave, Sydney NSW 2000 AU" required />
+							<input
+								type="text"
+								name="address"
+								id="address"
+								placeholder="456 Floral Ave, Sydney NSW 2000 AU"
+								required
+							/>
 						</div>
 						<div class="input-block">
 							<label for="comment">Message</label>
@@ -430,8 +353,13 @@
 					</form>
 				</div>
 			</div>
-		</div> -->
+		</div>
 
-		<script type="module" src="./js/mobile-menu.js"></script>
+		<script type="module" src="/js/mobile-menu.js"></script>
+		<script type="module" src="/js/catalogue.js"></script>
+		<script type="module" src="/js/notifications.js"></script>
+		<script type="module" src="/js/bestsellers.js"></script>
+		<script type="module" src="/js/modals.js"></script>
+		<script type="module" src="/js/feedbacks.js"></script>
 	</body>
 </html>
