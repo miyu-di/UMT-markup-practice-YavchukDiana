@@ -1,4 +1,4 @@
-import { apiClient } from "./apiClient.js";
+import { getAllFlowers } from "./flowersStore.js";
 import { showErrorNotification } from "./notifications.js";
 import { extractErrorMessage } from "./utils.js";
 
@@ -11,6 +11,7 @@ const nextButton = document.getElementById("bestsellers-next");
 
 let currentPage = 1;
 let totalPages = 1;
+let allTopFlowers = []; // кеш топ-букетів, заповнюється один раз при старті
 
 function formatPrice(priceDigits) {
 	if (!priceDigits) return "-";
@@ -76,39 +77,40 @@ function renderBestsellersChunk(flowers) {
 	});
 }
 
+function getTotalPages() {
+	return Math.max(1, Math.ceil(allTopFlowers.length / bestsellersPerPage));
+}
+
+function renderPage(page) {
+	bestsellersList.classList.add("loading");
+
+	const startIndex = (page - 1) * bestsellersPerPage;
+	const pageFlowers = allTopFlowers.slice(startIndex, startIndex + bestsellersPerPage);
+
+	currentPage = page;
+	totalPages = getTotalPages();
+
+	renderBestsellersChunk(pageFlowers);
+	renderDots();
+	updateArrowsState();
+
+	bestsellersList.classList.remove("loading");
+}
+
 async function fetchBestsellersPage(page) {
 	if (!bestsellersList) return;
 
 	try {
-		bestsellersList.classList.add("loading");
+		if (allTopFlowers.length === 0) {
+			const allFlowers = await getAllFlowers();
+			allTopFlowers = allFlowers.filter((flower) => flower.category === "top");
+		}
 
-		const response = await apiClient.get("/flowers", {
-			params: {
-				_page: page,
-				_per_page: bestsellersPerPage,
-				category: "top",
-			},
-		});
-
-		const responseBody = response.data;
-		const flowers = Array.isArray(responseBody) ? responseBody : (responseBody?.data ?? []);
-
-		totalPages =
-			responseBody?.pages ??
-			Math.max(1, Math.ceil(Number(response.headers["x-total-count"] || 0) / bestsellersPerPage));
-		currentPage = page;
-
-		await new Promise((resolve) => setTimeout(resolve, 200));
-
-		renderBestsellersChunk(flowers);
-		renderDots();
-		updateArrowsState();
+		renderPage(page);
 	} catch (error) {
 		const msg = extractErrorMessage ? extractErrorMessage(error) : "Server error";
 		if (showErrorNotification) showErrorNotification(msg);
 		else console.error(error);
-	} finally {
-		bestsellersList.classList.remove("loading");
 	}
 }
 

@@ -1,6 +1,6 @@
-import { apiClient } from "./apiClient.js";
 import { showErrorNotification } from "./notifications.js";
 import { extractErrorMessage } from "./utils.js";
+import { getAllFlowers } from "./flowersStore.js";
 
 const itemsPerPage = 8;
 const showMoreButtonDefaultLabel = "Show More";
@@ -11,7 +11,8 @@ const showMoreButton = document.getElementById("show-more-btn");
 const categoryFilter = document.getElementById("filter");
 
 let activeCategory = categoryFilter?.value ?? "all";
-let lastLoadedPage = 0;
+let renderedCount = 0;
+let filteredFlowers = [];
 
 function setShowMoreButtonLoading(isLoading) {
 	if (!showMoreButton) return;
@@ -34,7 +35,7 @@ function buildCatalogueListItemShellMarkup() {
     `;
 }
 
-function fillCatalogueListItem(listItem, flower) {
+function fillCatalogueListItem(listItem, flower, index) {
 	const image = listItem.querySelector(".bouquet-img");
 	image.src = flower.img;
 	image.alt = flower.title;
@@ -42,104 +43,74 @@ function fillCatalogueListItem(listItem, flower) {
 	listItem.querySelector(".bouquet-name").textContent = flower.title;
 	listItem.querySelector(".bouquet-price").textContent = formatPrice(flower.price);
 
-	listItem.dataset.flowerId = String(flower.id ?? flower.title ?? "");
+	listItem.dataset.flowerId = String(flower.id ?? flower.title ?? index);
 }
 
-function renderCatalogueChunk(flowers, shouldReplaceList) {
-	if (!bouquetList) return;
-
-	if (shouldReplaceList) bouquetList.replaceChildren();
-
-	const startIndex = bouquetList.children.length;
-	const chunkMarkup = flowers.map(() => buildCatalogueListItemShellMarkup()).join("");
-	bouquetList.insertAdjacentHTML("beforeend", chunkMarkup);
-
-	const listItems = bouquetList.querySelectorAll(":scope > .bouquet-card");
-	for (let i = 0; i < flowers.length; i += 1) {
-		fillCatalogueListItem(listItems[startIndex + i], flowers[i]);
+function updateShowMoreVisibility() {
+	if (!showMoreButton) return;
+	if (renderedCount >= filteredFlowers.length) {
+		showMoreButton.classList.add("visually-hidden");
+	} else {
+		showMoreButton.classList.remove("visually-hidden");
 	}
 }
 
-async function fetchCataloguePage(page, options) {
-	const { appendItems = false, showButtonLoader = false } = options;
-	const isInitialChunk = !appendItems;
+function renderNextChunk(shouldReplaceList) {
+	if (!bouquetList) return;
 
-	if (showButtonLoader) setShowMoreButtonLoading(true);
-	if (isInitialChunk && bouquetList) bouquetList.replaceChildren();
+	if (shouldReplaceList) {
+		bouquetList.replaceChildren();
+		renderedCount = 0;
+	}
 
+	const nextChunk = filteredFlowers.slice(renderedCount, renderedCount + itemsPerPage);
+
+	if (nextChunk.length === 0 && renderedCount === 0) {
+		bouquetList.innerHTML = '<p class="empty-message">No bouquets available.</p>';
+		if (showMoreButton) showMoreButton.classList.add("visually-hidden");
+		return;
+	}
+
+	const chunkMarkup = nextChunk.map(() => buildCatalogueListItemShellMarkup()).join("");
+	bouquetList.insertAdjacentHTML("beforeend", chunkMarkup);
+
+	const listItems = bouquetList.querySelectorAll(":scope > .bouquet-card");
+	nextChunk.forEach((flower, i) => {
+		fillCatalogueListItem(listItems[renderedCount + i], flower, renderedCount + i);
+	});
+
+	renderedCount += nextChunk.length;
+	updateShowMoreVisibility();
+}
+
+async function loadCatalogue() {
 	try {
-		const requestParams = {
-			_page: page,
-			_per_page: itemsPerPage,
-		};
-
-		if (activeCategory !== "all") {
-			requestParams.category = activeCategory;
-		}
-		const response = await apiClient.get("/flowers", { params: requestParams });
-		const responseBody = response.data;
-		const flowers = Array.isArray(responseBody) ? responseBody : (responseBody?.data ?? []);
-
-		if (appendItems && flowers.length > 0 && bouquetList) {
-			const firstFlowerId = String(flowers[0].id ?? flowers[0].title ?? "");
-			const isAlreadyRendered = bouquetList.querySelector(`[data-flower-id="${firstFlowerId}"]`);
-
-			if (isAlreadyRendered) {
-				if (showMoreButton) showMoreButton.classList.add("visually-hidden");
-				return;
-			}
-		}
-
-		if (flowers.length === 0 && isInitialChunk) {
-			bouquetList.innerHTML = '<p class="empty-message">No bouquets available.</p>';
-			if (showMoreButton) showMoreButton.classList.add("visually-hidden");
-			return;
-		}
-
-		renderCatalogueChunk(flowers, !appendItems);
-		lastLoadedPage = page;
-
-		if (showMoreButton) {
-			const hasNextPage =
-				responseBody && typeof responseBody === "object" && responseBody.next !== undefined
-					? responseBody.next !== null
-					: true;
-
-			const isLastPageByLength = flowers.length < itemsPerPage;
-
-			if (!hasNextPage || isLastPageByLength) {
-				showMoreButton.classList.add("visually-hidden");
-			} else {
-				showMoreButton.classList.remove("visually-hidden");
-			}
-		}
+		const allFlowers = await getAllFlowers();
+		filteredFlowers =
+			activeCategory === "all" ? allFlowers : allFlowers.filter((flower) => flower.category === activeCategory);
+		renderNextChunk(true);
 	} catch (error) {
 		const msg = extractErrorMessage ? extractErrorMessage(error) : "Server error";
 		if (showErrorNotification) showErrorNotification(msg);
 		else console.error(error);
-	} finally {
-		if (showButtonLoader) setShowMoreButtonLoading(false);
 	}
 }
 
-async function resetAndLoadFirstCataloguePage() {
-	lastLoadedPage = 0;
-	await fetchCataloguePage(1, { appendItems: false, showButtonLoader: false });
-}
-
 function handleFilterChange() {
-	activeCategory = categoryFilter?.value;
-	resetAndLoadFirstCataloguePage();
+	activeCategory = categoryFilter?.value ?? "all";
+	loadCatalogue();
 }
 
 function handleShowMoreClick() {
-	fetchCataloguePage(lastLoadedPage + 1, { appendItems: true, showButtonLoader: true });
+	setShowMoreButtonLoading(true);
+	renderNextChunk(false);
+	setShowMoreButtonLoading(false);
 }
 
 function initCatalogueFromApi() {
 	if (categoryFilter) categoryFilter.addEventListener("change", handleFilterChange);
 	if (showMoreButton) showMoreButton.addEventListener("click", handleShowMoreClick);
-	resetAndLoadFirstCataloguePage();
+	loadCatalogue();
 }
 
 initCatalogueFromApi();
