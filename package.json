@@ -2,7 +2,7 @@
 	"name": "umt-markup-practice-yavchukdiana",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"preview": "vite preview",
@@ -17,7 +17,6 @@
 	"keywords": [],
 	"author": "Diana Yavchuk",
 	"license": "ISC",
-	"type": "module",
 	"bugs": {
 		"url": "https://github.com/miyu-di/UMT-markup-practice-YavchukDiana/issues"
 	},
