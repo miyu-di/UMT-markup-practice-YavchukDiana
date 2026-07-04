@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          VITE_API_MODE: static
         run: npm run build
 
       - name: Upload Pages artifact
