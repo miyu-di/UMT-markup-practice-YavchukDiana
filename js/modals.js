@@ -1,5 +1,10 @@
+import { apiClient } from "./apiClient.js";
+import { getFlowerById, getAllFlowers } from "./flowersStore.js";
 import { getFlowerById, getAllFlowers } from "./flowersStore.js";
 import { showErrorNotification } from "./notifications.js";
+
+let selectedFlowerId = null;
+let selectedQuantity = 1;
 
 const productModal = document.querySelector(".product-modal");
 const orderModal = document.querySelector(".order-modal");
@@ -30,8 +35,6 @@ function resetOrderForm() {
 }
 
 async function handleFlowerCardClick(flowerId) {
-	// getAllFlowers() тут майже завжди поверне вже готовий кеш миттєво —
-	// await потрібен лише як підстраховка, якщо клік стався до першого рендеру
 	await getAllFlowers();
 	const flower = getFlowerById(flowerId);
 
@@ -39,6 +42,7 @@ async function handleFlowerCardClick(flowerId) {
 		if (showErrorNotification) showErrorNotification("Product not found");
 		return;
 	}
+	selectedFlowerId = flowerId;
 
 	if (modalImg) modalImg.src = flower.img || "";
 	if (modalImg) modalImg.alt = flower.title || "Flower bouquet";
@@ -61,6 +65,7 @@ document.addEventListener("click", (event) => {
 
 if (buyNowButton) {
 	buyNowButton.addEventListener("click", () => {
+		selectedQuantity = Number(quantityInput?.value) || 1;
 		closeModal(productBackdrop);
 		openModal(orderBackdrop);
 	});
@@ -91,10 +96,31 @@ document.addEventListener("keydown", (event) => {
 
 const orderForm = orderModal?.querySelector(".modal-form");
 if (orderForm) {
-	orderForm.addEventListener("submit", (event) => {
+	orderForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
-		console.log("Форма замовлення відправлена!");
-		closeModal(orderBackdrop);
-		resetOrderForm();
+
+		if (!selectedFlowerId) {
+			showErrorNotification("Спершу оберіть букет.");
+			return;
+		}
+
+		const formData = new FormData(orderForm);
+
+		const payload = {
+			bouquetId: Number(selectedFlowerId),
+			customerName: formData.get("name"),
+			customerPhone: formData.get("phone"),
+			address: formData.get("address"),
+			quantity: selectedQuantity,
+		};
+
+		try {
+			await apiClient.post("/orders", payload);
+			showSuccessNotification("Замовлення успішно оформлено!");
+			closeModal(orderBackdrop);
+			resetOrderForm();
+		} catch (error) {
+			showErrorNotification(extractErrorMessage(error, "Не вдалося оформити замовлення. Спробуйте пізніше."));
+		}
 	});
 }
