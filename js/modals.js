@@ -1,6 +1,5 @@
 import { apiClient } from "./apiClient.js";
 import { getFlowerById, getAllFlowers } from "./flowersStore.js";
-import { getFlowerById, getAllFlowers } from "./flowersStore.js";
 import { showErrorNotification } from "./notifications.js";
 
 let selectedFlowerId = null;
